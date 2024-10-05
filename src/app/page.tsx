@@ -58,6 +58,7 @@ export default function Home() {
         <div className="flex items-center justify-center flex-col-reverse sm:flex-row">
           <img src="/cat-kiss.gif" alt="cat" />
           <img src="/yippie.gif" alt="cat" />
+          <img src="/metalCat.gif" alt="cat" />
         </div>
       )}
       <div className="text-white font-light">

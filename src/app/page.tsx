@@ -1,7 +1,7 @@
 "use client";
 import Button from "@/components/Button";
 import { Fireworks } from "@fireworks-js/react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 export default function Home() {
   const [show, setShow] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -29,13 +29,6 @@ export default function Home() {
       suffix = "th";
   }
 
-  useEffect(() => {
-    // Autoplay the sound when the component is mounted
-    if (audioRef.current) {
-      audioRef.current.play();
-    }
-  }, []);
-
   const showOnClick = () => {
     setShow(true);
     if (audioRef.current) {
@@ -44,12 +37,12 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col  gap-10 w-full h-screen items-center justify-around">
+    <div className="flex flex-col  gap-10 w-full h-screen items-center justify-around p-5 text-center">
       {!show && <div></div>}
       {show && <Fireworks className="h-full w-full absolute" />}
-      <div className="flex">
+      <div className="flex items-center justify-center w-full">
         {show && (
-          <h1 className="text-4xl font-bold font-mono">
+          <h1 className="text-6xl font-bold font-mono">
             Happy {age + suffix} Birthday Chris 🎉
           </h1>
         )}
@@ -62,13 +55,13 @@ export default function Home() {
       </audio>
 
       {show && (
-        <div className="flex">
+        <div className="flex items-center justify-center flex-col-reverse sm:flex-row">
           <img src="/cat-kiss.gif" alt="cat" />
           <img src="/yippie.gif" alt="cat" />
         </div>
       )}
       <div className="text-white font-light">
-        {new Date().getFullYear()} all rights reserved to Christiena Gamal
+        ©{new Date().getFullYear()} all rights reserved to Christiena Gamal
         Shehata
       </div>
     </div>

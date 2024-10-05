@@ -37,7 +37,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col  gap-10 w-full h-screen items-center justify-around p-5 text-center">
+    <div className="flex flex-col gap-10 w-full h-lvh items-center justify-around p-5 text-center">
       {!show && <div></div>}
       {show && <Fireworks className="h-full w-full absolute" />}
       <div className="flex items-center justify-center w-full">
@@ -58,7 +58,7 @@ export default function Home() {
         <div className="flex items-center justify-center flex-col-reverse sm:flex-row">
           <img src="/cat-kiss.gif" alt="cat" />
           <img src="/yippie.gif" alt="cat" />
-          <img src="/metalCat.gif" alt="cat" />
+          <img src="/metalCat.gif" alt="cat" className="w-2/3" />
         </div>
       )}
       <div className="text-white font-light">

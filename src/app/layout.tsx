@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
+
+export const meta: Metadata = {
+  title: "Happy Birthday Chris!",
+  description: "A birthday surprise for Chris",
+};
 
 export default function RootLayout({
   children,

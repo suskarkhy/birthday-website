@@ -13,7 +13,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`font-sans`}>{children}</body>
+      <body className={`font-sans`}>
+        {children}
+
+        <div className="fixed bottom-2 -translate-x-1/2 left-1/2 text-center text-white font-light w-full">
+          ©{new Date().getFullYear()} all rights reserved to Christiena Gamal
+          Shehata
+        </div>
+      </body>
     </html>
   );
 }

@@ -1,70 +1,31 @@
-"use client";
-import Button from "@/components/Button";
-import { Fireworks } from "@fireworks-js/react";
-import { useRef, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+
 export default function Home() {
-  const [show, setShow] = useState(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
-
-  // take year of birth and calculate age
-  const yearOfBirth = 1998;
-  const currentYear = new Date().getFullYear();
-  const age = currentYear - yearOfBirth;
-
-  // get the last digit of the age to determine the suffix
-  const lastDigit = age % 10;
-  let suffix = "";
-
-  switch (lastDigit) {
-    case 1:
-      suffix = "st";
-      break;
-    case 2:
-      suffix = "nd";
-      break;
-    case 3:
-      suffix = "rd";
-      break;
-    default:
-      suffix = "th";
-  }
-
-  const showOnClick = () => {
-    setShow(true);
-    if (audioRef.current) {
-      audioRef.current.play();
-    }
-  };
+  const links = [
+    { label: "Birthday #26", href: "/26" },
+    {
+      label: "Birthday #27 (click me)",
+      href: "/27",
+    },
+  ];
 
   return (
-    <div className="flex flex-col gap-10 w-full h-lvh items-center justify-around p-5 text-center">
-      {!show && <div></div>}
-      {show && <Fireworks className="h-full w-full absolute" />}
-      <div className="flex items-center justify-center w-full">
-        {show && (
-          <h1 className="text-6xl font-bold font-mono">
-            Happy {age + suffix} Birthday Chris 🎉
-          </h1>
-        )}
-
-        {!show && <Button onClick={showOnClick} />}
-      </div>
-
-      <audio ref={audioRef}>
-        <source src="/song.mp3" type="audio/mpeg" />
-      </audio>
-
-      {show && (
-        <div className="flex items-center justify-center flex-col-reverse sm:flex-row">
-          <img src="/cat-kiss.gif" alt="cat" />
-          <img src="/yippie.gif" alt="cat" />
-          <img src="/metalCat.gif" alt="cat" className="w-2/3" />
-        </div>
-      )}
-      <div className="text-white font-light">
-        ©{new Date().getFullYear()} all rights reserved to Christiena Gamal
-        Shehata
-      </div>
+    <div className="flex flex-col items-center justify-center h-lvh gap-10">
+      <Image
+        width={10}
+        height={10}
+        src="/yippie.gif"
+        alt="cat"
+        className="w-16"
+      />
+      {links.map((link) => (
+        <Link href={link.href} key={link.href}>
+          <div className="text-lg underline cursor-pointer font-mono font-bold">
+            {link.label}
+          </div>
+        </Link>
+      ))}
     </div>
   );
 }

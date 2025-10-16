@@ -217,7 +217,7 @@ const Age27 = () => {
 
       {flameOut && <Fireworks />}
 
-      <div className="absolute bottom-20 m-auto px-2 w-full space-y-3 flex flex-col items-center">
+      <div className="absolute bottom-32 m-auto px-2 w-full space-y-3 flex flex-col items-center">
         <h2 className="text-lg font-mono font-bold">Play your song below</h2>
         <audio ref={audioRef} controls className="w-full">
           <source src="/hazy-bazy-yoyo.mp3" type="audio/mpeg" />

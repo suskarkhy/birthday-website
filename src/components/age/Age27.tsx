@@ -1,5 +1,6 @@
 "use client";
 import "@/components/scss/age27.scss";
+import { getAgeSuffix } from "@/utils";
 import { FlameParticle } from "@/utils/age27";
 import { useEffect, useRef, useState } from "react";
 
@@ -7,7 +8,7 @@ const MAX_PART_COUNT = 100;
 const REIGNITE_RATE = 2;
 const MAX_PART_DOWNTIME = 15;
 const ALPHA = 0.5;
-const THRESHOLD = 0.09;
+const THRESHOLD = 0.015;
 
 const Age27 = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -33,7 +34,7 @@ const Age27 = () => {
   ) => {
     ctx.beginPath();
     ctx.arc(cw / 2, ch / 2, 14, Math.PI * 2, 0);
-    ctx.fillStyle = "rgba(185, 125, 45, 0.1)";
+    ctx.fillStyle = "rgba(185, 125, 45, 0)";
     ctx.fill();
     ctx.closePath();
   };
@@ -43,29 +44,6 @@ const Age27 = () => {
     lowpassRef.current =
       ALPHA * meter.volume + (1.0 - ALPHA) * lowpassRef.current;
     return lowpassRef.current > THRESHOLD;
-  };
-
-  const createAudioMeter = (audioContext: AudioContext) => {
-    const meter = {
-      volume: 0,
-      clipLevel: 0.98,
-      clipLag: 750,
-      averaging: 0.95,
-      clipCounter: 0,
-    };
-
-    const scriptProcessor = audioContext.createScriptProcessor(4096, 1, 1);
-    scriptProcessor.onaudioprocess = (event) => {
-      const input = event.inputBuffer.getChannelData(0);
-      let sum = 0.0;
-      for (let i = 0; i < input.length; i++) {
-        sum += input[i] * input[i];
-      }
-      const rms = Math.sqrt(sum / input.length);
-      meter.volume = Math.max(rms, meter.volume * meter.averaging);
-    };
-
-    return { scriptProcessor, meter };
   };
 
   useEffect(() => {
@@ -80,16 +58,42 @@ const Age27 = () => {
         const audioContext = new (window.AudioContext || window.AudioContext)();
         const microphone = audioContext.createMediaStreamSource(stream);
 
-        const { scriptProcessor, meter } = createAudioMeter(audioContext);
-        meterRef.current = meter;
+        await audioContext.audioWorklet.addModule("/worklet.js");
 
+        // store volume meter
+        meterRef.current = {
+          volume: 0,
+          clipLevel: 0.98,
+          clipLag: 750,
+          averaging: 0.95,
+          clipCounter: 0,
+        };
+
+        // create processor node
+        const meterNode = new AudioWorkletNode(
+          audioContext,
+          "volume-processor"
+        );
+
+        meterNode.port.onmessage = (event) => {
+          const volume = event.data.volume;
+          // simple smoothing
+          meterRef.current!.volume = Math.max(
+            volume,
+            meterRef.current!.volume * meterRef.current!.averaging
+          );
+        };
+
+        // optional: filter to remove high-frequency noise
         const filter = audioContext.createBiquadFilter();
         filter.type = "lowpass";
         filter.frequency.value = 400;
 
-        microphone.connect(filter);
-        filter.connect(scriptProcessor);
-        scriptProcessor.connect(audioContext.destination);
+        // connect chain
+        microphone
+          .connect(filter)
+          .connect(meterNode)
+          .connect(audioContext.destination);
 
         setIsListening(true);
       } catch (err) {
@@ -141,13 +145,18 @@ const Age27 = () => {
       }
 
       // Update and draw particles
-      for (let i = 0; i < particleCountRef.current; i++) {
-        if (particlesRef.current[i].curLife < 0) {
+      for (
+        let i = 0;
+        i < particleCountRef.current && i < particlesRef.current.length;
+        i++
+      ) {
+        const particle = particlesRef.current[i];
+        if (!particle) continue;
+        if (particle.curLife < 0) {
           particlesRef.current[i] = new FlameParticle(cw / 2, ch / 2);
         }
         particlesRef.current[i].update(ctx, cw, ch, meterRef.current, blowing);
       }
-
       // Draw base
       drawFlameBase(ctx, cw, ch);
 
@@ -165,8 +174,12 @@ const Age27 = () => {
   }, []);
 
   return (
-    <>
-      <div className="h-screen w-full flex items-center justify-center">
+    <div className="w-full overflow-hidden">
+      <h1 className="text-3xl font-bold font-mono text-center mt-10">
+        Happy {27 + getAgeSuffix(27)} Birthday Chris 🎉
+      </h1>
+
+      <div className="h-screen w-full flex items-center justify-center overflow-hidden">
         <div className="cake">
           <div className="plate"></div>
           <div className="layer layer-bottom"></div>
@@ -176,10 +189,10 @@ const Age27 = () => {
           <div className="drip drip1"></div>
           <div className="drip drip2"></div>
           <div className="drip drip3"></div>
-          <div className="bg-white relative">
+          <div className="relative w-full h-full z-[100000]">
             <canvas
               ref={canvasRef}
-              className="absolute left-0 top-0"
+              className="absolute left-1/2 top-[20%] -translate-x-1/2 -translate-y-1/2 w-[400px] h-[200px]"
               style={{ filter: "url('#blur') blur(1.5px)" }}
             />
           </div>
@@ -189,7 +202,7 @@ const Age27 = () => {
       {!isListening && !error && (
         <p className="text-gray-400 mb-4 text-sm">Waiting for microphone...</p>
       )}
-    </>
+    </div>
   );
 };
 

@@ -2,6 +2,7 @@
 import "@/components/scss/age27.scss";
 import { getAgeSuffix } from "@/utils";
 import { FlameParticle } from "@/utils/age27";
+import Fireworks from "@fireworks-js/react";
 import { useEffect, useRef, useState } from "react";
 
 const MAX_PART_COUNT = 100;
@@ -21,8 +22,10 @@ const Age27 = () => {
     averaging: number;
     clipCounter: number;
   } | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const particleCountRef = useRef(100);
+  const [flameOut, setIsFlameOut] = useState(false);
   const lowpassRef = useRef(0);
   const [isListening, setIsListening] = useState(false);
   const [error, setError] = useState("");
@@ -142,6 +145,10 @@ const Age27 = () => {
         particleCountRef.current -= intensity;
       }
 
+      // Detect flame-out / reignite
+      if (!flameOut && particleCountRef.current <= 0) setIsFlameOut(true);
+      if (flameOut && particleCountRef.current > 0) setIsFlameOut(false);
+
       // Update and draw particles
       for (
         let i = 0;
@@ -173,11 +180,51 @@ const Age27 = () => {
 
   return (
     <div className="w-full overflow-hidden">
-      <h1 className="text-3xl font-bold font-mono text-center mt-10">
-        Happy {27 + getAgeSuffix(27)} Birthday Chris 🎉
-      </h1>
+      {!flameOut && (
+        <>
+          <h1 className="text-2xl lg:text-4xl font-bold font-mono text-center mt-10">
+            Blow into the microphone!
+          </h1>
+          <h1 className="text-2xl lg:text-4xl font-bold font-mono text-center mt-10">
+            Make a wish!🎉
+          </h1>
+        </>
+      )}
+      {flameOut && (
+        <div className="p-2 space-y-10">
+          <h1 className="text-2xl lg:text-4xl font-bold font-mono text-center mt-10">
+            Happy {27 + getAgeSuffix(27)} Birthday Chris 🎉
+          </h1>
+          <div className="grid grid-cols-3 gap-2 lg:w-1/2 mx-auto align-middle justify-items-center">
+            <img
+              src="/cat-kiss.gif"
+              alt="I love u"
+              className="w-[150px] h-[150px]"
+            />
+            <img
+              src="/shrek.gif"
+              alt="I love u"
+              className="w-[150px] h-[150px]"
+            />
+            <img
+              src="/grumpy.gif"
+              alt="I love u"
+              className="w-[150px] h-[150px]"
+            />
+          </div>
+        </div>
+      )}
 
-      <div className="h-screen w-full flex items-center justify-center overflow-hidden">
+      {flameOut && <Fireworks />}
+
+      <div className="absolute bottom-20 m-auto px-2 w-full space-y-3 flex flex-col items-center">
+        <h2 className="text-lg font-mono font-bold">Play your song below</h2>
+        <audio ref={audioRef} controls className="w-full">
+          <source src="/hazy-bazy-yoyo.mp3" type="audio/mpeg" />
+        </audio>
+      </div>
+
+      <div className="h-screen w-full flex items-center justify-center overflow-hidden -mb-20">
         <div className="cake">
           <div className="plate"></div>
           <div className="layer layer-bottom"></div>

@@ -1,6 +1,7 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
 import "@/components/scss/age27.scss";
+import { FlameParticle } from "@/utils/age27";
+import { useEffect, useRef, useState } from "react";
 
 const MAX_PART_COUNT = 100;
 const REIGNITE_RATE = 2;
@@ -9,70 +10,42 @@ const ALPHA = 0.5;
 const THRESHOLD = 0.09;
 
 const Age27 = () => {
-  const canvasRef = useRef(null);
-  const animationRef = useRef(null);
-  const particlesRef = useRef([]);
-  const meterRef = useRef(null);
-  const streamRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const animationRef = useRef<number | null>(null);
+  const particlesRef = useRef<FlameParticle[]>([]);
+  const meterRef = useRef<{
+    volume: number;
+    clipLevel: number;
+    clipLag: number;
+    averaging: number;
+    clipCounter: number;
+  } | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
   const particleCountRef = useRef(100);
   const lowpassRef = useRef(0);
   const [isListening, setIsListening] = useState(false);
   const [error, setError] = useState("");
 
-  const rand = (min, max) => min + Math.random() * (max - min);
-
-  class FlameParticle {
-    constructor(x, y) {
-      this.radius = 15;
-      this.speed = { x: rand(-0.5, 0.5), y: 2.5 };
-      this.life = rand(50, 100);
-      this.alpha = 0.5;
-      this.x = x;
-      this.y = y;
-      this.curAlpha = this.alpha;
-      this.curLife = this.life;
-    }
-
-    update(ctx, cw, ch, meter, isBlowing) {
-      if (this.curLife <= 90) {
-        this.radius -= Math.min(this.radius, 0.25);
-        this.curAlpha -= 0.005;
-      }
-
-      if (meter && isBlowing) {
-        this.x += rand(-meter.volume, meter.volume) * 50;
-      }
-
-      this.curLife -= this.speed.y;
-      this.y -= this.speed.y;
-      this.draw(ctx);
-    }
-
-    draw(ctx) {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, Math.PI * 2, false);
-      ctx.fillStyle = `rgba(254, 252, 207, ${this.curAlpha})`;
-      ctx.fill();
-      ctx.closePath();
-    }
-  }
-
-  const drawFlameBase = (ctx, cw, ch) => {
+  const drawFlameBase = (
+    ctx: CanvasRenderingContext2D,
+    cw: number,
+    ch: number
+  ) => {
     ctx.beginPath();
-    ctx.arc(cw / 2, ch / 2, 14, Math.PI * 2, false);
-    ctx.fillStyle = "rgba(185, 125, 45, 0.4)";
+    ctx.arc(cw / 2, ch / 2, 14, Math.PI * 2, 0);
+    ctx.fillStyle = "rgba(185, 125, 45, 0.1)";
     ctx.fill();
     ctx.closePath();
   };
 
-  const isBlowing = (meter) => {
+  const isBlowing = (meter: { volume: number } | null) => {
     if (!meter) return false;
     lowpassRef.current =
       ALPHA * meter.volume + (1.0 - ALPHA) * lowpassRef.current;
     return lowpassRef.current > THRESHOLD;
   };
 
-  const createAudioMeter = (audioContext) => {
+  const createAudioMeter = (audioContext: AudioContext) => {
     const meter = {
       volume: 0,
       clipLevel: 0.98,
@@ -81,9 +54,9 @@ const Age27 = () => {
       clipCounter: 0,
     };
 
-    const scriptProcessor = audioContext.createScriptProcessor(4096);
+    const scriptProcessor = audioContext.createScriptProcessor(4096, 1, 1);
     scriptProcessor.onaudioprocess = (event) => {
-      const input = event.inputData.getChannelData(0);
+      const input = event.inputBuffer.getChannelData(0);
       let sum = 0.0;
       for (let i = 0; i < input.length; i++) {
         sum += input[i] * input[i];
@@ -101,10 +74,10 @@ const Age27 = () => {
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
         });
+
         streamRef.current = stream;
 
-        const audioContext = new (window.AudioContext ||
-          window.webkitAudioContext)();
+        const audioContext = new (window.AudioContext || window.AudioContext)();
         const microphone = audioContext.createMediaStreamSource(stream);
 
         const { scriptProcessor, meter } = createAudioMeter(audioContext);
@@ -156,6 +129,7 @@ const Age27 = () => {
     }, 200);
 
     const animate = () => {
+      if (!ctx) return;
       ctx.clearRect(0, 0, cw, ch);
 
       const blowing = isBlowing(meterRef.current);
@@ -202,11 +176,13 @@ const Age27 = () => {
           <div className="drip drip1"></div>
           <div className="drip drip2"></div>
           <div className="drip drip3"></div>
-          <canvas
-            ref={canvasRef}
-            className="block mx-auto -mb-[500px] blur-[1.5px] opacity-90"
-            style={{ filter: "url('#blur') blur(1.5px)" }}
-          />
+          <div className="bg-white relative">
+            <canvas
+              ref={canvasRef}
+              className="absolute left-0 top-0"
+              style={{ filter: "url('#blur') blur(1.5px)" }}
+            />
+          </div>
         </div>
       </div>
       {error && <p className="text-red-400 mb-4">{error}</p>}

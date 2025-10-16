@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 
 const MAX_PART_COUNT = 100;
 const REIGNITE_RATE = 2;
-const MAX_PART_DOWNTIME = 15;
+// const MAX_PART_DOWNTIME = 15;
 const ALPHA = 0.5;
 const THRESHOLD = 0.015;
 
@@ -137,11 +137,9 @@ const Age27 = () => {
       ctx.clearRect(0, 0, cw, ch);
 
       const blowing = isBlowing(meterRef.current);
-
       if (blowing) {
-        if (particleCountRef.current > -MAX_PART_DOWNTIME) {
-          particleCountRef.current -= 1;
-        }
+        const intensity = Math.min(meterRef.current!.volume * 200, 10); // scale volume to 0–10 range
+        particleCountRef.current -= intensity;
       }
 
       // Update and draw particles

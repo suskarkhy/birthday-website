@@ -193,7 +193,7 @@ const Age27 = () => {
       {flameOut && (
         <div className="p-2 space-y-10">
           <h1 className="text-2xl lg:text-4xl font-bold font-mono text-center mt-10">
-            Happy {27 + getAgeSuffix(27)} Birthday Chris 🎉
+            Happy {27 + getAgeSuffix(27)} Birthday Chris and Dina 🎉
           </h1>
           <div className="grid grid-cols-3 gap-2 lg:w-1/2 mx-auto align-middle justify-items-center">
             <img

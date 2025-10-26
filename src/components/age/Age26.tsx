@@ -25,7 +25,7 @@ const Age26 = () => {
       <div className="flex items-center justify-center w-full">
         {show && (
           <h1 className="text-6xl font-bold font-mono">
-            Happy {age + getAgeSuffix(age)} Birthday Chris 🎉
+            Happy {age + getAgeSuffix(age)} Birthday Chris and Dina 🎉
           </h1>
         )}
 

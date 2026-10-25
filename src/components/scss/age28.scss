@@ -40,14 +40,14 @@
 
 .age28-photo-card {
   flex: 0 0 auto;
-  width: 250px;
-  height: 250px;
+  width: clamp(200px, 55vw, 250px);
+  height: clamp(200px, 55vw, 250px);
   border-radius: 1rem;
   overflow: hidden;
   position: relative;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
   border: 3px solid rgba(255, 255, 255, 0.6);
-  background: #111;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
 }
 
 .age28-photo-card img {
@@ -83,23 +83,18 @@
 }
 
 @media (max-width: 640px) {
-  .age28-photo-card {
-    width: 150px;
-    height: 100px;
-  }
-
   .age28-photo-placeholder span {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
   }
 
   .age28-photo-placeholder p {
-    font-size: 0.65rem;
+    font-size: 0.7rem;
   }
 }
 
 .age28-floating-gif {
   position: absolute;
-  width: 90px;
+  width: clamp(80px, 24vw, 110px);
   opacity: 0.9;
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
   animation: age28-float 4s ease-in-out infinite;
@@ -114,11 +109,5 @@
   }
   50% {
     transform: translateY(-14px) rotate(4deg);
-  }
-}
-
-@media (max-width: 640px) {
-  .age28-floating-gif {
-    width: 52px;
   }
 }

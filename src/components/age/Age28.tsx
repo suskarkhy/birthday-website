@@ -11,7 +11,7 @@ const PHOTOS = [
   { id: 2, src: "/chris_dina_1.jpeg", alt: "Memory 2" },
   { id: 3, src: "/glasses-cats.jpg", alt: "Memory 3" },
   { id: 3, src: "/chris_dina_2.jpeg", alt: "Memory 3" },
-  { id: 3, src: "/poker-face.jpg", alt: "Memory 3" },
+  { id: 3, src: "/kitties.jpg", alt: "Memory 3" },
   { id: 3, src: "/chris_dina_3.jpeg", alt: "Memory 3" },
 ];
 

@@ -1,0 +1,124 @@
+.age28-marquee-wrapper {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+}
+
+.age28-marquee-track {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  animation: age28-scroll 16s linear infinite;
+}
+
+.age28-marquee-wrapper:hover .age28-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes age28-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.age28-photo-card {
+  flex: 0 0 auto;
+  width: 250px;
+  height: 250px;
+  border-radius: 1rem;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  border: 3px solid rgba(255, 255, 255, 0.6);
+  background: #111;
+}
+
+.age28-photo-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.age28-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  background: linear-gradient(135deg, #ff9a8b, #ff6a88, #a16ae8);
+  color: white;
+  font-weight: 700;
+  font-family: monospace;
+  text-align: center;
+  padding: 0 0.5rem;
+}
+
+.age28-photo-placeholder span {
+  font-size: 2.25rem;
+}
+
+.age28-photo-placeholder p {
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+@media (max-width: 640px) {
+  .age28-photo-card {
+    width: 150px;
+    height: 100px;
+  }
+
+  .age28-photo-placeholder span {
+    font-size: 1.5rem;
+  }
+
+  .age28-photo-placeholder p {
+    font-size: 0.65rem;
+  }
+}
+
+.age28-floating-gif {
+  position: absolute;
+  width: 90px;
+  opacity: 0.9;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
+  animation: age28-float 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes age28-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(4deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .age28-floating-gif {
+    width: 52px;
+  }
+}

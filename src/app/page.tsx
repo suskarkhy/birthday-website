@@ -5,8 +5,12 @@ export default function Home() {
   const links = [
     { label: "Birthday #26", href: "/26" },
     {
-      label: "Birthday #27 (click me)",
+      label: "Birthday #27",
       href: "/27",
+    },
+    {
+      label: "Birthday #28 (click me)",
+      href: "/28",
     },
   ];
 

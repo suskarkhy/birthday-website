@@ -3,6 +3,7 @@ import React from "react";
 const ageComponents = {
   "26": React.lazy(() => import("@/components/age/Age26")),
   "27": React.lazy(() => import("@/components/age/Age27")),
+  "28": React.lazy(() => import("@/components/age/Age28")),
 };
 
 const page = ({ params: { age } }: { params: { age: string } }) => {
